@@ -7,10 +7,14 @@ address = '地址'
 
 
 def search(search_words):
+    search_mode = False
     if search_words.find(address) == 0:
         search_mode = True
         movie_name = search_words[2:]
-    columns = ['title', 'rank', 'base_url']
+        columns = ['title', 'rank', 'base_url']
+    else:
+        movie_name = search_words
+        columns = ['title', 'rank']
     data_list = dao_manager.select_by_cause('dy2018', cause_list=["title like '%{}%'".format(movie_name)],
                                             columns=columns, order='order by rank desc'
                                             )
