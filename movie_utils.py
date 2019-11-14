@@ -10,14 +10,19 @@ def search(search_words):
     if search_words.find(address) == 0:
         search_mode = True
         movie_name = search_words[2:]
+    columns = ['title', 'rank', 'base_url']
     data_list = dao_manager.select_by_cause('dy2018', cause_list=["title like '%{}%'".format(movie_name)],
-                                            columns=['title', 'rank'], order='order by rank desc'
+                                            columns=columns, order='order by rank desc'
                                             )
     result = []
     if len(data_list) == 0:
         return '额...没搜到...'
-    for data in data_list:
-        result.append('《%s》分数:%s' % data)
+    if search_mode:
+        for data in data_list:
+            result.append('《%s》分数:%s ,地址:%s' % data)
+    else:
+        for data in data_list:
+            result.append('《%s》分数:%s' % data)
     return '\n'.join(result)
 
 
