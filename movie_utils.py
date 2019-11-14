@@ -3,8 +3,13 @@ import random
 
 import dao_manager
 
+address = '地址'
 
-def search(movie_name):
+
+def search(search_words):
+    if search_words.find(address) == 0:
+        search_mode = True
+        movie_name = search_words[2:]
     data_list = dao_manager.select_by_cause('dy2018', cause_list=["title like '%{}%'".format(movie_name)],
                                             columns=['title', 'rank'], order='order by rank desc'
                                             )
