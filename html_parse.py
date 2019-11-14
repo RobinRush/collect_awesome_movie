@@ -2,18 +2,20 @@
 from xml.etree import ElementTree
 from bs4 import BeautifulSoup
 
-movie_map = {}
 def parse(html_str):
     soup = BeautifulSoup(html_str, "html.parser")
+    title = ''
+    rank = 0
+    title_str = soup.head.title.text
+    title = title_str[title_str.find('《')+1:title_str.find('》')]
     for tag in soup.find_all('span'):
-        if tag.text.find('评分') >= 0:
+        if tag.text.find('评分') >= 0 and len(tag.contents) > 1:
             print(tag.contents[1].text)
-    for tag in soup.find_all('p'):
-        if tag.text.find('译　　名') >= 0:
-            movie_map['name'] = tag.text[6:]
+            rank = tag.contents[1].text
             break
-    for tag in soup.find_all('table'):
-        print(tag)
+    return title, rank
+    # for tag in soup.find_all('table'):
+    #     print(tag)
     pass
 
 

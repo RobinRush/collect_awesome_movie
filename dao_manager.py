@@ -15,17 +15,17 @@ def insert_demo():
     dbhelper.close()
 
 
-def insert_dy2018(base_url, http_code):
+def insert_dy2018(base_url, http_code, title, rank, content):
     dbhelper = DBHelper()
     dbhelper.connect()
     cur = dbhelper.get_cur()
-    sql_str = """insert into dy2018(base_url, http_code)VALUES(%s, %s)"""
+    sql_str = """insert into dy2018(base_url, http_code, title, rank, content)VALUES(%s, %s, %s, %s, %s)"""
     try:
-        cur.execute(sql_str, (base_url, http_code))
+        cur.execute(sql_str, (base_url, http_code, title, rank, content))
     except IntegrityError as e:
         if e.args[0] == 1062:
-            sql_str = """update dy2018 set http_code=%s where base_url=%s"""
-            cur.execute(sql_str, (http_code, base_url))
+            sql_str = """update dy2018 set http_code=%s,title=%s,rank=%s,content=%s where base_url=%s"""
+            cur.execute(sql_str, (http_code, title, rank, content, base_url))
             dbhelper.commit()
             dbhelper.close()
             return True
@@ -43,7 +43,7 @@ def select(table):
     return select_by_cause(table)
 
 
-def select_by_cause(table, causes=None, cause_list=None, columns=None, select_singe=False):
+def select_by_cause(table, causes=None, cause_list=None, columns=None, order='', select_singe=False, limit=10, offset=0):
     if columns is None:
         sql_column = '*'
     else:
@@ -61,7 +61,7 @@ def select_by_cause(table, causes=None, cause_list=None, columns=None, select_si
             where = '1=1 AND ( %s )' % (' AND '.join(cause_list))
         else:
             where = '1=1'
-    sql_str = """SELECT %s FROM %s WHERE %s""" % (sql_column, table, where)
+    sql_str = """SELECT %s FROM %s WHERE %s %s LIMIT %s,%s""" % (sql_column, table, where, order, offset, limit)
     print(sql_str)
     dbhelper = DBHelper()
     dbhelper.connect()
